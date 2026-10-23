@@ -1,0 +1,107 @@
+# ==========================================
+# ByteSMS - Git Ignore File
+# ==========================================
+
+# ------------------------------------------
+# 1. Sensitive Project Data (CRITICAL)
+# ------------------------------------------
+# Never upload configuration, databases, or logs to public repositories!
+data/
+data/*
+!data/.gitkeep
+
+# Just in case files are placed outside the data folder
+config.txt
+settings.json
+users.txt
+logs.txt
+proxies.txt
+
+# ------------------------------------------
+# 2. Python Bytecode & Caches
+# ------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ------------------------------------------
+# 3. Virtual Environments
+# ------------------------------------------
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# ------------------------------------------
+# 4. Environment Variables
+# ------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ------------------------------------------
+# 5. IDE & Editor Settings
+# ------------------------------------------
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+
+# ------------------------------------------
+# 6. Operating System Files
+# ------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+.Trash-*
+
+# ------------------------------------------
+# 7. Temporary & Log Files
+# ------------------------------------------
+*.tmp
+*.bak
+*.log
+*.pid
+*.seed
+*.pid.lock
