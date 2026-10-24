@@ -223,7 +223,7 @@ class UserStore:
             if 'enabled' not in u: u['enabled'] = True; changed = True
         if CFG['ADMIN_USER'] not in self._data['users']:
             self._data['users'][CFG['ADMIN_USER']] = {
-                'password_hash': generate_password_hash(CFG['ADMIN_PASSWORD']),
+                'password_hash': generate_password_hash(CFG['ADMIN_PASSWORD'], method='pbkdf2:sha256'),
                 'role': 'admin', 'max_rounds': -1, 'max_phones': -1,
                 'used_rounds': 0, 'used_phones': [],
                 'created_at': now_iso(), 'last_seen': None, 'status': 'offline',
@@ -255,7 +255,7 @@ class UserStore:
             if not u or len(u) < 3: return False, 'Username must be at least 3 characters'
             if not p or len(p) < 6: return False, 'Password must be at least 6 characters'
             self._data['users'][u] = {
-                'password_hash': generate_password_hash(p),
+                'password_hash': generate_password_hash(p, method='pbkdf2:sha256'),
                 'role': 'user', 'max_rounds': int(mr), 'max_phones': int(mp),
                 'used_rounds': 0, 'used_phones': [],
                 'created_at': now_iso(), 'last_seen': None, 'status': 'offline',
@@ -277,7 +277,7 @@ class UserStore:
             if new_u != old_u and new_u in self._data['users']: return False, 'New username already exists'
             
             user_data = self._data['users'].pop(old_u)
-            user_data['password_hash'] = generate_password_hash(new_p)
+            user_data['password_hash'] = generate_password_hash(new_p, method='pbkdf2:sha256')
             self._data['users'][new_u] = user_data
             self._save(); return True, 'ok'
     def update_limits(self, u, mr, mp, reset=False):
@@ -296,7 +296,7 @@ class UserStore:
         with self._lock:
             x = self._data['users'].get(u)
             if not x: return False
-            x['password_hash'] = generate_password_hash(p); self._save(); return True
+            x['password_hash'] = generate_password_hash(p, method='pbkdf2:sha256'); self._save(); return True
     def set_nickname(self, u, nickname):
         with self._lock:
             x = self._data['users'].get(u)
@@ -926,9 +926,9 @@ class BaleBot:
         self.token = token
         self.base_url = f"https://tapi.bale.ai/bot{token}"
         self.offset = 0
-        self.user_states = {} # chat_id -> state string
-        self.authenticated = {} # chat_id -> username
-        self.temp_data = {} # chat_id -> dict
+        self.user_states = {} 
+        self.authenticated = {} 
+        self.temp_data = {} 
         self.thread = Thread(target=self._polling_loop, daemon=True)
         self.thread.start()
         
@@ -938,7 +938,6 @@ class BaleBot:
             r = requests.post(url, json=params or {}, timeout=10)
             return r.json()
         except Exception as e:
-            # print(f"[BaleBot] API Error ({method}): {e}")
             return None
             
     def _polling_loop(self):
